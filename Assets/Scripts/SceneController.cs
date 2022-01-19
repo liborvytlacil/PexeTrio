@@ -29,8 +29,6 @@ public class SceneController : MonoBehaviour
     [Tooltip("Offset between two cards in a column.")]
     public float offsetY = 2f;
 
-    // How many triplets are on currently on the table (current level of the game)
-    private int tripletsInPlay;
     // How many triplets have been revealed on the table.
     private int foundTripletsCount;
     // List of currently revealed cards (0, 1, 2 or 3 cards are revealed at each moment)
@@ -38,9 +36,12 @@ public class SceneController : MonoBehaviour
     
     void Start()
     {
-        tripletsInPlay = initialTripletsInPlay;
+        // initialize the game state if it hasn't been done already
+        GameState.tryInitialize(initialTripletsInPlay);
+
+        // prepare level
         revealedCards = new List<Card>();
-        generateGrid(tripletsInPlay);
+        generateGrid(GameState.GetTripletsInPlay());
         DisplayTriesText();
     }
 
@@ -71,10 +72,10 @@ public class SceneController : MonoBehaviour
     // already at max, win scene is loaded instead.
     private void LevelUp()
     {
-        if (tripletsInPlay < maxTripletsInPlay - 3)
+        if (GameState.GetTripletsInPlay() < maxTripletsInPlay)
         {
-            tripletsInPlay++;
-            SceneManager.LoadScene("SampleScene");
+            GameState.SetTripletsInPlay(GameState.GetTripletsInPlay() + 1);
+            SceneManager.LoadScene("PlayScene");
         } else
         {
             SceneManager.LoadScene("WinScene");
@@ -105,7 +106,7 @@ public class SceneController : MonoBehaviour
 
             // Note the match
             foundTripletsCount++;
-            if (foundTripletsCount == tripletsInPlay)
+            if (foundTripletsCount == GameState.GetTripletsInPlay())
             {
                 LevelUp();
             }
@@ -174,7 +175,7 @@ public class SceneController : MonoBehaviour
             // [0, 1, 2] forms one triplet, [3, 4, 5] forms another etc.. 
             // to determine the triplet to which an id belongs to, we use 'id / cardsInTriplet' formula
             int id = ids[i];
-            card.SetCard(1, cardDeck[id]);
+            card.SetCard(id / 3, cardDeck[id]);
 
             float posX = (offsetX * (i % dimensions.Cols)) + startPos.x;
             float posY = -(offsetY * (i / dimensions.Cols)) + startPos.y;
