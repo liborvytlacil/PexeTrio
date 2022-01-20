@@ -4,3 +4,4 @@ containing the same geometric shapes (colors and counts does not matter).
 
 Controls:
   * Use mouse pointer to hover over a card and reveal it by a left click.
+![screenshot](https://user-images.githubusercontent.com/14996280/150349221-ba379584-c62e-47b3-bfb4-61024f0fce11.png)
