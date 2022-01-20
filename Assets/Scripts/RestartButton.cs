@@ -32,6 +32,7 @@ public class RestartButton : MonoBehaviour
 
     private void OnMouseUp()
     {
+        GameState.Uninitialize();
         transform.localScale = Vector3.one;
         GameState.SetTries(0);
         SceneManager.LoadScene("PlayScene");
